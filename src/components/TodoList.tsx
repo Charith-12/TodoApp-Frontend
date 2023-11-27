@@ -16,66 +16,92 @@ const TodoList: React.FC = () => {
     isCompleted: false,
   });
   const [editTodo, setEditTodo] = useState<Partial<Todo> | null>(null);
+  const [error, setError] = useState<string | null>(null); // State for API error handling
 
   useEffect(() => {
     fetchTodos();
   }, []);
 
   const fetchTodos = async () => {
-    const todos = await getTodos();
-    setTodos(todos);
+    try {
+      const todos = await getTodos();
+      setTodos(todos);
+      setError(null); // Clear any previous errors on success
+    } catch (error) {
+      setError("Error fetching todos. Please try again."); // Set error message on failure
+    }
   };
 
   const handleAddTodo = async () => {
-    // Validate the title presence before adding a new todo
-    if (!newTodo.title?.trim()) {
-      alert("Title is required.");
-      return;
+    try {
+      // Validate the title presence before adding a new todo
+      if (!newTodo.title?.trim()) {
+        alert("Title is required.");
+        return;
+      }
+
+      // Validate character limit of the title field
+      if (newTodo.title.length > 1000) {
+        alert("Title must be 1000 characters or less.");
+        return;
+      }
+
+      // Validate character limit of the description field
+      if (newTodo.description && newTodo.description.length > 5000) {
+        alert("Description must be 5000 characters or less.");
+        return;
+      }
+
+      const todo: Todo = {
+        todoId: 0, // The server will assign the ID
+        title: newTodo.title.trim() || "",
+        description: newTodo.description?.trim() || "",
+        isCompleted: newTodo.isCompleted || false,
+      };
+
+      await addTodo(todo);
+      fetchTodos();
+      setNewTodo({
+        title: "",
+        description: "",
+        isCompleted: false,
+      });
+      setError(null); // Clear any previous errors on success
+    } catch (error) {
+      setError(
+        (error as Error).message || "Error adding todo. Please try again."
+      ); // Set error message on failure
     }
-
-    // Validate character limit of the title field
-    if (newTodo.title.length > 1000) {
-      alert("Title must be 1000 characters or less.");
-      return;
-    }
-
-    // Validate character limit of the description field
-    if (newTodo.description && newTodo.description.length > 5000) {
-      alert("Description must be 5000 characters or less.");
-      return;
-    }
-
-    const todo: Todo = {
-      todoId: 0, // The server will assign the ID
-      title: newTodo.title.trim() || "",
-      description: newTodo.description?.trim() || "",
-      isCompleted: newTodo.isCompleted || false,
-    };
-
-    await addTodo(todo);
-    fetchTodos();
-    setNewTodo({
-      title: "",
-      description: "",
-      isCompleted: false,
-    });
   };
 
   const handleToggleTodo = async (id: number) => {
     const todoToUpdate = todos.find((todo) => todo.todoId === id);
 
-    if (todoToUpdate) {
-      await updateTodo(id, {
-        ...todoToUpdate,
-        isCompleted: !todoToUpdate.isCompleted,
-      });
-      fetchTodos();
+    try {
+      if (todoToUpdate) {
+        await updateTodo(id, {
+          ...todoToUpdate,
+          isCompleted: !todoToUpdate.isCompleted,
+        });
+        fetchTodos();
+      }
+    } catch (error) {
+      setError(
+        (error as Error).message || "Error updating todo. Please try again."
+      ); // Set error message on failure
     }
   };
 
   const handleDeleteTodo = async (id: number) => {
-    await deleteTodo(id);
-    fetchTodos();
+    try {
+      await deleteTodo(id);
+      fetchTodos();
+      setError(null); // Clear any previous errors on success
+    } catch (error) {
+      setError(
+        (error as Error).message || "Error deleting todo. Please try again."
+      ); // Set error message on failure
+    }
   };
 
   const handleEditClick = (todo: Todo) => {
@@ -88,33 +114,40 @@ const TodoList: React.FC = () => {
   };
 
   const handleSaveEdit = async () => {
-    if (editTodo) {
-      // Validate the title presence before updating the todo
-      if (!editTodo.title?.trim()) {
-        alert("Title is required.");
-        return;
-      }
+    try {
+      if (editTodo) {
+        // Validate the title presence before updating the todo
+        if (!editTodo.title?.trim()) {
+          alert("Title is required.");
+          return;
+        }
 
-      // Validate character limit of the title field
-      if (editTodo.title.length > 1000) {
-        alert("Title must be 1000 characters or less.");
-        return;
-      }
+        // Validate character limit of the title field
+        if (editTodo.title.length > 1000) {
+          alert("Title must be 1000 characters or less.");
+          return;
+        }
 
-      // Validate character limit of the description field
-      if (editTodo.description && editTodo.description.length > 5000) {
-        alert("Description must be 5000 characters or less.");
-        return;
-      }
+        // Validate character limit of the description field
+        if (editTodo.description && editTodo.description.length > 5000) {
+          alert("Description must be 5000 characters or less.");
+          return;
+        }
 
-      await updateTodo(editTodo.todoId!, {
-        todoId: editTodo.todoId || -1,
-        title: editTodo.title.trim() || "",
-        description: editTodo.description?.trim() || "",
-        isCompleted: editTodo.isCompleted || false,
-      });
-      fetchTodos();
-      setEditTodo(null);
+        await updateTodo(editTodo.todoId!, {
+          todoId: editTodo.todoId || -1,
+          title: editTodo.title.trim() || "",
+          description: editTodo.description?.trim() || "",
+          isCompleted: editTodo.isCompleted || false,
+        });
+        fetchTodos();
+        setEditTodo(null);
+        setError(null); // Clear any previous errors on success
+      }
+    } catch (error) {
+      setError(
+        (error as Error).message || "Error updating todo. Please try again."
+      ); // Set error message on failure
     }
   };
 
@@ -125,6 +158,7 @@ const TodoList: React.FC = () => {
   return (
     <div className="todo-container">
       <h1>Todo List</h1>
+      {error && <div className="error-message">{error}</div>}
       <ul className="todo-list">
         {todos.map((todo) => (
           <li key={todo.todoId} className="todo-item">

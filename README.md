@@ -2,38 +2,37 @@
 
 ### 1. Clone the Repository:
 
-  Run the following command to clone the repository:
+Run the following command to clone the repository:
 
-  `git clone https://github.com/Charith-12/TodoApp-Frontend.git`
-
+`git clone https://github.com/Charith-12/TodoApp-Frontend.git`
 
 ### 2. Navigate to the Project Folder:
 
-  `cd todo-app`
+`cd todo-app`
 
-  
 ### 3. Install Dependencies:
 
-  Run the following command to install the project dependencies:
+Run the following command to install the project dependencies:
 
-  `npm install`
-
+`npm install`
 
 ### 4. Run the React App:
 
-  Run the following command to start the React app:
-  
-  `npm start`
-  
-  The React app will be hosted, and you should see an output indicating the URL where it's running (typically http://localhost:3000).
+Run the following command to start the React app:
 
-  
+`npm start`
+
+The React app will be hosted, and you should see an output indicating the URL where it's running (typically http://localhost:3000).
+
 ### 5. Access the App:
 
-  Open your web browser and navigate to http://localhost:3000 to access.
+Open your web browser and navigate to http://localhost:3000 to access.
 
+This client appliation expects the API to be available on: `https://localhost:7089/api/Todo`
 
-___________________________________________________________________________________________________________________________________________
+You can change this API URL accordingly in the "TodoService.ts".
+
+---
 
 # Getting Started with Create React App
 

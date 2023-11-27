@@ -1,7 +1,6 @@
 import axios from "axios";
 import { Todo } from "../models/Todo";
 
-//const API_URL = "https://localhost:5001/api/todo";
 const API_URL = "https://localhost:7089/api/Todo";
 
 export const getTodos = async (): Promise<Todo[]> => {

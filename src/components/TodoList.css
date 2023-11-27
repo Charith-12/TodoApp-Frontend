@@ -1,6 +1,7 @@
 .todo-container {
   max-width: 600px;
   margin: 0 auto;
+  padding: 3px;
 }
 
 .todo-list {
@@ -97,4 +98,12 @@
   border-radius: 20px;
   padding: 8px;
   background-color: rgb(78, 154, 231);
+}
+
+.error-message {
+  color: #d9534f;
+  background-color: #f2dede;
+  border: 1px solid #d9534f;
+  padding: 10px;
+  margin-bottom: 10px;
 }
