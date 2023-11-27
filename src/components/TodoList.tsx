@@ -27,10 +27,28 @@ const TodoList: React.FC = () => {
   };
 
   const handleAddTodo = async () => {
+    // Validate the title presence before adding a new todo
+    if (!newTodo.title?.trim()) {
+      alert("Title is required.");
+      return;
+    }
+
+    // Validate character limit of the title field
+    if (newTodo.title.length > 1000) {
+      alert("Title must be 1000 characters or less.");
+      return;
+    }
+
+    // Validate character limit of the description field
+    if (newTodo.description && newTodo.description.length > 5000) {
+      alert("Description must be 5000 characters or less.");
+      return;
+    }
+
     const todo: Todo = {
       todoId: 0, // The server will assign the ID
-      title: newTodo.title || "",
-      description: newTodo.description || "",
+      title: newTodo.title.trim() || "",
+      description: newTodo.description?.trim() || "",
       isCompleted: newTodo.isCompleted || false,
     };
 
@@ -71,10 +89,28 @@ const TodoList: React.FC = () => {
 
   const handleSaveEdit = async () => {
     if (editTodo) {
+      // Validate the title presence before updating the todo
+      if (!editTodo.title?.trim()) {
+        alert("Title is required.");
+        return;
+      }
+
+      // Validate character limit of the title field
+      if (editTodo.title.length > 1000) {
+        alert("Title must be 1000 characters or less.");
+        return;
+      }
+
+      // Validate character limit of the description field
+      if (editTodo.description && editTodo.description.length > 5000) {
+        alert("Description must be 5000 characters or less.");
+        return;
+      }
+
       await updateTodo(editTodo.todoId!, {
         todoId: editTodo.todoId || -1,
-        title: editTodo.title || "",
-        description: editTodo.description || "",
+        title: editTodo.title.trim() || "",
+        description: editTodo.description?.trim() || "",
         isCompleted: editTodo.isCompleted || false,
       });
       fetchTodos();
